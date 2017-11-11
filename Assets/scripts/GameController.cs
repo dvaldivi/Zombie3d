@@ -74,9 +74,10 @@ public class GameController : MonoBehaviour {
         }
     }
     public void generaPieza() {
-        bool error = true;
-        int n_piezas = 0;
+        bool error = false;
+        int n_piezas = 1;
         do {
+           
             int pieza_int = UnityEngine.Random.Range(0, 1);
 
             
@@ -91,9 +92,12 @@ public class GameController : MonoBehaviour {
                 for (int i = 0; no_encaja && i < n_salidas; i++) {
                     if (salidas_pos.ContainsKey(i)) {
                         /*encuentra la salida*/
-
+                        /*Debug.Log("salida numero " + i);
                         Debug.Log(salidas_pos[i]);
+                        Debug.Log(n_piezas);*/
                         no_encaja = comprobarEncaje(salidas_pos[i],0,i);
+                        if(!no_encaja)
+                                n_piezas++;
                     }
                     
 
@@ -112,15 +116,15 @@ public class GameController : MonoBehaviour {
             else {
 
             }
-            n_piezas++;
-        } while (error && n_piezas < 7);
+           
+        } while (!error && n_piezas <= 25);
         if (error && n_piezas == 5) {
             Debug.Log("error al colocar pieza");
         } else {
-            /*
-            añadirSalidas()
-            quitasSalidasAnt()
-            */
+            
+            /*añadirSalidas()
+            quitasSalidasAnt()*/
+            
         }
         if(Time.time > 1)
         miestado = Estado.player;
@@ -141,112 +145,39 @@ public class GameController : MonoBehaviour {
         /*
          * / SALIDA DERECHA
          * */
-        
-        if (!nivel.ContainsKey(x.ToString() + "x" + (y + 1).ToString())   )
-           {
-
-               if (!nivel.ContainsKey((x+2).ToString() + "x" + (y + 2).ToString()) || nivel[(x+2).ToString() + "x" + (y + 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-               {
-
-                   if (!nivel.ContainsKey((x-2).ToString() + "x" + (y + 2).ToString()) || nivel[(x-2).ToString() + "x" + (y + 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-                   {
-
-                       salida_decidida = "dch";
-              
-                       pos_pieza_n = new Vector2(x - 1, y + 1);
-
-                   }
-               }
-
-
-           }
-           
-
-        /*
-         * / SALIDA IZQUIERDA
-         * */
-
-        /*
-          else if (!nivel.ContainsKey(x.ToString() + "x" + (y - 1).ToString()))
-         {
-
-             if (!nivel.ContainsKey((x + 2).ToString() + "x" + (y + -2).ToString()) || nivel[(x + 2).ToString() + "x" + (y -2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-             {
-
-                 if (!nivel.ContainsKey((x - 2).ToString() + "x" + (y -2).ToString()) || nivel[(x - 2).ToString() + "x" + (y -2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-                 {
-
-                     salida_decidida = "izq";
-
-                     pos_pieza_n = new Vector2(x - 1, y - 3);
-
-                 }
-             }
-
-
-         } else */
-         
-        /*
-        /*
-         * / SALIDA ARRIBA
-         * */
-        /*
-         if (!nivel.ContainsKey((x+1).ToString() + "x" + (y).ToString())) {
-            Debug.Log("a");
-
-            if (!nivel.ContainsKey((x+2).ToString() + "x" + (y+2).ToString()) || nivel[(x+2).ToString() + "x" + (y+2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-               {
-                Debug.Log("b");
-                if (!nivel.ContainsKey((x+2).ToString() + "x" + (y -2).ToString()) || nivel[(x+2).ToString() + "x" + (y - 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
-                   {
-                    Debug.Log("c");
-                    salida_decidida = "arr";
-
-                       pos_pieza_n = new Vector2(x + 1, y - 1);
-
-                  }
-               }
-
-
-        }
-         */
-
-
-
-        /*
-         * / SALIDA ABAJO
-         * */
-         /*
-        if (!nivel.ContainsKey((x - 1).ToString() + "x" + (y).ToString()))
+ 
+        if (!nivel.ContainsKey(x.ToString() + "x" + (y + 1).ToString()))
         {
-           
-
-            if (!nivel.ContainsKey((x - 2).ToString() + "x" + (y + 2).ToString()) || nivel[(x - 2).ToString() + "x" + (y + 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+            Debug.Log("nivel contiene= =? + " + x.ToString() + "x" + (y + 1).ToString());
+            if (!nivel.ContainsKey((x + 2).ToString() + "x" + (y + 2).ToString()) || nivel[(x + 2).ToString() + "x" + (y + 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
             {
-               
 
-                if (!nivel.ContainsKey((x - 2).ToString() + "x" + (y - 2).ToString()) || nivel[(x - 2).ToString() + "x" + (y - 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+                if (!nivel.ContainsKey((x - 2).ToString() + "x" + (y + 2).ToString()) || nivel[(x - 2).ToString() + "x" + (y + 2).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
                 {
-                  
-                    salida_decidida = "abj";
 
-                    pos_pieza_n = new Vector2(x - 3, y - 1);
+                    salida_decidida = "dch";
+
+                    pos_pieza_n = new Vector2(x - 1, y + 1);
 
                 }
             }
 
 
         }
+        
+           
 
-
-        */
+    
 
 
 
         if (salida_decidida != "")
         {
+            salidas.Remove(salida);
+            salidas_pos.Remove(salida_num);
+            n_salidas_act--;
 
-
+            Debug.Log("salida decidida " + salida);
             var inicio = new GameObject();
             inicio.name = "pieza";
             for (int i = 0; i < 3; i++)
@@ -257,6 +188,7 @@ public class GameController : MonoBehaviour {
                     if (i == 1 && j == 1)
                     {
                         temp.GetComponent<baldosa_info>().tipo = "normal";
+                        /*temp.GetComponent<baldosa_info>().pos = i.ToString() + "x" + j.ToString();*/
 
                     }
                     else if (i == 1 || j == 1)
@@ -268,25 +200,46 @@ public class GameController : MonoBehaviour {
                     {
                         temp.GetComponent<baldosa_info>().tipo = "bloqueo";
                     }
-                  
-                    if (!salidas.ContainsKey((i + pos_pieza_n.x+1).ToString() + "x" + (j + pos_pieza_n.y+2).ToString()))
+                    /*
+                      if (!salidas.ContainsKey((i + pos_pieza_n.x+1).ToString() + "x" + (j + pos_pieza_n.y+2).ToString()))
+                      {
+                          if (temp.GetComponent<baldosa_info>().tipo == "salida")
+                          {
+
+                              salidas.Remove(salida);
+                              salidas_pos.Remove(salida_num);
+                              n_salidas_act--;
+
+                              n_salidas++;
+                              if (!nivel.ContainsKey((i + pos_pieza_n.x-1).ToString() + "x" + (j + pos_pieza_n.y + 1).ToString())){
+                                  nivel.Add((i + pos_pieza_n.x -1).ToString() + "x" + (j + pos_pieza_n.y + 1).ToString(), temp);
+                              }
+                              if (!salidas.ContainsKey((i + pos_pieza_n.x -1).ToString() + "x" + (j + pos_pieza_n.y + 1).ToString()))
+                              {
+                                  salidas.Add((i + pos_pieza_n.x -1).ToString() + "x" + (j + pos_pieza_n.y + 1).ToString(), temp);
+                              }
+
+                               salidas_pos.Add(n_salidas, (i + pos_pieza_n.x + 1).ToString() + "x" + (j + pos_pieza_n.y + 1).ToString());
+                              n_salidas_act++;
+
+                          }
+                      }
+                      else {
+
+                      }
+                      */
+                    if (temp.GetComponent<baldosa_info>().tipo == "salida")
                     {
                         n_salidas++;
-                      
-                        salidas.Add((i + pos_pieza_n.x + 1).ToString() + "x" + (j + pos_pieza_n.y + 2).ToString(), temp);
-                        salidas_pos.Add(n_salidas, (i + pos_pieza_n.x + 1).ToString() + "x" + (j + pos_pieza_n.y + 2).ToString());
+                        salidas.Add((i + pos_pieza_n.x).ToString() + "x" + (j + pos_pieza_n.y).ToString(), temp);
+                        salidas_pos.Add(n_salidas, (i + pos_pieza_n.x).ToString() + "x" + (j + pos_pieza_n.y).ToString());
                         n_salidas_act++;
-                        
-                       
                     }
-                    else {
-                        salidas.Remove(salida);
-                        salidas_pos.Remove(salida_num);
-                        n_salidas_act--;
-                    }
-                    //this.GetComponent<baldosa_info>().pos = (i + pos_pieza_n.x).ToString() + "x" + (j + pos_pieza_n.y).ToString();
+                        temp.GetComponent<baldosa_info>().pos = (i + pos_pieza_n.x).ToString() + "x" + (j + pos_pieza_n.y).ToString();
+                        nivel.Add((i + pos_pieza_n.x).ToString() + "x" + (j + pos_pieza_n.y).ToString(), temp);
 
                     temp.transform.parent = inicio.transform;
+
                    // Debug.Log(n_salidas_act);
 
                 }
