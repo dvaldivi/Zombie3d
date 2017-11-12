@@ -153,6 +153,9 @@ public class GameController : MonoBehaviour {
          * / SALIDA DERECHA
          * */
  
+        
+
+        
         if (!nivel.ContainsKey(x.ToString() + "x" + (y + 1).ToString()))
         {
             Debug.Log("nivel contiene= =? + " + x.ToString() + "x" + (y + 1).ToString());
@@ -172,10 +175,12 @@ public class GameController : MonoBehaviour {
 
         }
         
-        /*
+     /*
      * / SALIDA izq
      * */
      
+    
+        
         if (!nivel.ContainsKey(x.ToString() + "x" + (y - 1).ToString()))
         {
             Debug.Log("¿ nivel contiene ?=  " + x.ToString() + "x" + (y - 1).ToString());
@@ -195,8 +200,55 @@ public class GameController : MonoBehaviour {
 
 
         }
+        
+        
+        /*
+          * / SALIDA arriba
+          * */
+
+        
+        if (!nivel.ContainsKey(x+1.ToString() + "x" + (y).ToString()))
+        {
+            Debug.Log("¿ nivel contiene ?=  " + (x+1).ToString() + "x" + (y).ToString());
+            if (!nivel.ContainsKey((x + 2).ToString() + "x" + (y - 1).ToString()) || nivel[(x + 2).ToString() + "x" + (y - 1).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+            {
+
+                if (!nivel.ContainsKey((x + 2).ToString() + "x" + (y +1).ToString()) || nivel[(x + 2).ToString() + "x" + (y +1).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+                {
+
+                    salida_decidida = "arr";
+
+                    pos_pieza_n = new Vector2(x + 1, y - 1);
+                    margen = new Vector2(2, 0);
+
+                }
+            }
 
 
+        }
+        /*
+          * / SALIDA abajo
+          * */
+          
+        if (!nivel.ContainsKey((x -1).ToString() + "x" + (y).ToString()))
+        {
+            Debug.Log("¿ nivel contiene ?=  " + (x - 1).ToString() + "x" + (y).ToString());
+            if (!nivel.ContainsKey((x -2 ).ToString() + "x" + (y - 1).ToString()) || nivel[(x - 2).ToString() + "x" + (y - 1).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+            {
+
+                if (!nivel.ContainsKey((x - 2).ToString() + "x" + (y + 1).ToString()) || nivel[(x - 2).ToString() + "x" + (y + 1).ToString()].GetComponent<baldosa_info>().tipo == "bloqueo")
+                {
+
+                    salida_decidida = "abj";
+
+                    pos_pieza_n = new Vector2(x - 1, y - 1);
+                    margen = new Vector2(-2, 0);
+
+                }
+            }
+
+
+        }
         
         if (salida_decidida != "")
         {
@@ -247,7 +299,8 @@ public class GameController : MonoBehaviour {
                             }
 
                         }
-                        else {
+                        else if (salida_decidida.Equals("izq"))
+                        {
                             if (i == 1 && j == 2) { temp.GetComponent<baldosa_info>().tipo = "normal"; }
                             else
                             {
@@ -257,6 +310,31 @@ public class GameController : MonoBehaviour {
                                 salidas_pos.Add(n_salidas, ((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString());
                                 n_salidas_act++;
                             }
+                        }
+                        else if (salida_decidida.Equals("arr"))
+                        {
+                            if (i ==1 && j == 1) { temp.GetComponent<baldosa_info>().tipo = "normal"; }
+                            else
+                            {
+                                Debug.Log("salida añadida " + ((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString());
+                                n_salidas++;
+                                salidas.Add(((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString(), temp);
+                                salidas_pos.Add(n_salidas, ((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString());
+                                n_salidas_act++;
+                            }
+                        }
+                        else if (salida_decidida.Equals("abj"))
+                        {
+                            if (i == 2 && j == 1) { temp.GetComponent<baldosa_info>().tipo = "normal"; }
+                            else
+                            {
+                                Debug.Log("salida añadida " + ((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString());
+                                n_salidas++;
+                                salidas.Add(((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString(), temp);
+                                salidas_pos.Add(n_salidas, ((margen.x + i) + pos_pieza_n.x).ToString() + "x" + ((margen.y + j) + pos_pieza_n.y).ToString());
+                                n_salidas_act++;
+                            }
+
                         }
                     }
                         temp.GetComponent<baldosa_info>().pos = ((margen.x+i) + pos_pieza_n.x).ToString() + "x" + ((margen.y+j) + pos_pieza_n.y).ToString();
